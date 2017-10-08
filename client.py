@@ -4,6 +4,7 @@ from socket import *
 import sys
 print("To close type \"close\"")
 port = input("PORT = ")
+port = 4598
 s = socket(AF_INET,SOCK_STREAM)
 s.connect(("localhost",int(port)))
 print(s.recv(1024).decode("ascii"))

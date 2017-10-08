@@ -5,6 +5,7 @@ import sys
 import random
 s = socket(AF_INET,SOCK_STREAM)
 port = random.randint(0,10000)
+port = 4598
 s.bind(("localhost",port))
 s.listen(5)
 print("To close type \"close\"")
