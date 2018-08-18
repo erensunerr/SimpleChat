@@ -1,29 +1,36 @@
-# -*- coding: UTF-8 -*-
-#!/usr/bin/python3
-from socket import *
-import sys
-import random
-s = socket(AF_INET,SOCK_STREAM)
-port = random.randint(0,10000)
-port = 4598
-s.bind(("localhost",port))
-s.listen(5)
-print("To close type \"close\"")
-print("PORT = "+str(port))
-while True:
-	c,a = s.accept()
-	c.send("Connected".encode("ascii"))
-	print(c.recv(1024).decode("utf-8"))
-	while True:
-		a4 = input("Host -> ")
-		if a4 == "close":
-			print("Closing...")
-			c.send("Server requested, Closing...".encode("ascii"))
-			sys.exit()
-		b1 = str(a4).encode("ascii")
-		c.send(b1)
-		a5 = c.recv(4096)
-		a5 = str(a5.decode("utf-8"))
-		print("Client -> "+a5)
-			
+import socket, sys, random, threading, time
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+host = '192.168.0.23'
+port = random.randint(1000,9999)
+print("Port: {}".format(port))
+s.bind((host,port))
+s.listen(1)
+cs, caddr = s.accept()
+print("{} just appeared.".format(caddr[0]))
 
+def send():
+    global s
+    while True:
+        time.sleep(1)
+        myInput = input("Me -> ")
+        f = open("a.py",'r').read()
+        for line in f:
+        if myInput:
+            if myInput == '!quit':
+                sys.exit(0)
+            else:
+            cs.send(myInput.encode('ascii'))
+
+
+def receive():
+    global s, caddr
+    while True:
+        time.sleep(1)
+        data = cs.recv(1024)
+        if data:
+            print("\n{0} -> {1}".format(caddr[0],data.decode('ascii')))
+
+T_receive = threading.Thread(target=receive)
+T_send = threading.Thread(target=send)
+T_receive.start()
+T_send.start()
